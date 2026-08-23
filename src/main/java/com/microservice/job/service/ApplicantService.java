@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -70,7 +74,9 @@ public class ApplicantService {
 		if(StringUtils.hasText(experience)) {
 			query.addCriteria(Criteria.where("experience").regex(experience, "i"));
 		}				
-	   try {		  
+	   try {
+		   
+		  long totalNoOfPages = mongoTemplate.count(query, JobPostRequest.class);		  
 		  List<JobPostRequest>	lists = mongoTemplate.find(query, JobPostRequest.class,"jobs");		                               
 		  if(CollectionUtils.isEmpty(lists)) {
 			  return new ArrayList<>();
@@ -84,7 +90,7 @@ public class ApplicantService {
 	}
 	
 	 //Paginated version of above code
-     public List<JobPostRequest> searchSpecificJobs(String company , String technology , String experience,
+     public Page<JobPostRequest> searchSpecificJobs(String company , String technology , String experience,
     		 int pageNo, int pageSize) {
 		
 		Query query = new Query();			
@@ -97,17 +103,19 @@ public class ApplicantService {
 		if(StringUtils.hasText(experience)) {
 			query.addCriteria(Criteria.where("experience").regex(experience, "i"));
 		}
-		query.skip((pageNo - 1) * pageSize);
-		query.limit(pageSize);
-	   try {		  
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
+		
+	   try {
+		  long totalCount  = mongoTemplate.count(query, JobPostRequest.class,"jobs"); 
+		  query.with(pageable);
 		  List<JobPostRequest>	lists = mongoTemplate.find(query, JobPostRequest.class,"jobs");		                               
 		  if(CollectionUtils.isEmpty(lists)) {
-			  return new ArrayList<>();
+			  throw new RuntimeException("No data matched your search result");
 		  }else {
-			  return lists;
+			  return new PageImpl<>(lists,pageable,totalCount);
 		  }
 	   }catch(Exception ex) {
-		  ex.printStackTrace();
+		  //ex.printStackTrace();
 		  throw new RuntimeException("Exception while fetching jobs",ex);
 	   }	  		
 	}

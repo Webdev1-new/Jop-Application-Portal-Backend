@@ -103,6 +103,7 @@ public class ApplicantService {
 		if(StringUtils.hasText(experience)) {
 			query.addCriteria(Criteria.where("experience").regex(experience, "i"));
 		}
+		
 		Pageable pageable = PageRequest.of(pageNo, pageSize);
 		
 	   try {

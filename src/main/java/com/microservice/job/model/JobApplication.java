@@ -15,7 +15,7 @@ public class JobApplication {
 	String username;
 	String jobTitle;
 	LocalDate jobApplicationadate = LocalDate.now();
-	String result;
+	String result = "PENDING";
 	LocalDate interviewprocessingDate;
 	
 	public JobApplication(String applicationId, String jobId, String username, String jobTitle,

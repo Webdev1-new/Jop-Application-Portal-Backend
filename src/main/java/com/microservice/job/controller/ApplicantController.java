@@ -51,6 +51,7 @@ public class ApplicantController {
 	@GetMapping(value="/search/jobs")
 	public Object searchSpecificJob(@RequestParam(value = "company" , required = false) String company , @RequestParam(value="technology" , required = false) String technology,
 			@RequestParam(value = "experience" , required = false) String experience) {
+		
 		try {
 			System.out.println(company + "::"+ technology + "::" + experience);
 			return new ResponseEntity<>(applicantService.searchSpecificJob(company, technology, experience),HttpStatus.OK);

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: jobportal-config
+  namespace: jobportal
+
+data:
+  SPRING_PROFILES_ACTIVE: prod

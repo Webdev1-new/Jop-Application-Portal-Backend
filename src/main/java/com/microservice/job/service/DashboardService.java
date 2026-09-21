@@ -26,8 +26,7 @@ public class DashboardService {
 	@Autowired
 	JobPostingRepository jobPostingRepository;
 	
-	public List<JobRecommened> getRecommendedJobs() {
-		
+	public List<JobRecommened> getRecommendedJobs() {		
 		Pageable pageable = PageRequest.of(0,5,Sort.by("jobPostedDate").descending());		
 		Page<JobPostRequest> jobPostingRequest = jobPostingRepository.findAll(pageable);		
 		if(jobPostingRequest.isEmpty()) {

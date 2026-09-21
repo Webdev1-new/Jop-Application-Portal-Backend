@@ -3,9 +3,14 @@ package com.microservice.job.model;
 
 import java.time.LocalDateTime;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection="jobs")
+@CompoundIndex(
+	    name = "company_skill_experience_idx",
+	    def = "{'companyName': 1, 'skills': 1, 'experience': 1}"
+	)
 public class JobPostRequest {
 	
     private String jobTitle;

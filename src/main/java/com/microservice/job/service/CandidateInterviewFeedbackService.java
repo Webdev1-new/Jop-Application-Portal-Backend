@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.microservice.job.model.CandidateFeedbackDTO;
 import com.microservice.job.model.CandidateInterviewFeedback;
 import com.microservice.job.model.HrFeedaback;
+import com.microservice.job.model.InterviewDetails;
+import com.microservice.job.model.InterviewFeedback;
 import com.microservice.job.model.InterviewFeedbackStatus;
 import com.microservice.job.model.MrFeedback;
 import com.microservice.job.model.Trfeedback;
@@ -27,10 +29,16 @@ public class CandidateInterviewFeedbackService {
 	@Autowired
 	InterviewRepository interviewRepository;
 	
+	
+	
 	public void saveCandidateInterviewFeedback(CandidateFeedbackDTO candidateFeedback , String feedback) {
 		
-		Optional<CandidateInterviewFeedback> opts = interviewFeedbackRepo.findByApplicationIdAndJobId(candidateFeedback.getApplicationId(), candidateFeedback.getJobId());		
-		if(opts.isPresent()) {
+		Optional<CandidateInterviewFeedback> opts = interviewFeedbackRepo.findByApplicationIdAndJobId(candidateFeedback.getApplicationId(), candidateFeedback.getJobId());	
+		Optional<InterviewDetails>  interviewDetails = interviewRepository.findByApplicationIdAndJobId(candidateFeedback.getApplicationId(), candidateFeedback.getJobId());
+		if(!interviewDetails.isPresent()) {
+			throw new RuntimeException("No job has been scheduled");
+		}
+		if(opts.isPresent() ) {
 			interviewFeedbackRepo.save(dtoToEntityMapper(candidateFeedback,feedback,opts.get()));
 		}else {
 			interviewFeedbackRepo.save(dtoToEntityMapper(candidateFeedback,feedback,new CandidateInterviewFeedback()));
@@ -52,6 +60,7 @@ public class CandidateInterviewFeedbackService {
 			trfeedback.setTrName(candidateFeedback.getMrname());
 			candidateInterviewFeedback.setTrFeedback(trfeedback);
 			if(candidateFeedback.getDecision().equalsIgnoreCase("Rejected")) {
+				candidateInterviewFeedback.setCurrentApplicationStatus("PENDING");
 				candidateInterviewFeedback.setCurrentApplicationStatus(InterviewFeedbackStatus.TR_REJECT.name());	
 			}else {
 				candidateInterviewFeedback.setCurrentApplicationStatus(InterviewFeedbackStatus.TR_SELECT.name());

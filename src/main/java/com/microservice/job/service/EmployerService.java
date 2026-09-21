@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,8 @@ public class EmployerService {
 	@Autowired
 	KafkaTemplate<String,Interview> kafkaTemplate;
 	
+	
+	@CacheEvict(value = "jobSearch", allEntries = true)
 	public String postJob(JobPostRequest jobPostRequest) {
 		
 		if(null==jobPostRequest) {

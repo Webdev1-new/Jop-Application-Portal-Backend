@@ -8,5 +8,5 @@ import com.microservice.job.model.Interview;
 
 @Repository
 public interface InterviewRepository extends MongoRepository<Interview,String>{
-
+   
 }

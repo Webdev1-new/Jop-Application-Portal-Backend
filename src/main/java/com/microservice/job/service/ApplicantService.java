@@ -2,6 +2,7 @@ package com.microservice.job.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -18,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import com.microservice.job.model.JobApplication;
 import com.microservice.job.model.JobPostRequest;
+import com.microservice.job.repository.InterviewRepository;
 import com.microservice.job.repository.JobApplicationRepo;
 import com.microservice.job.repository.JobPostingRepository;
 
@@ -29,6 +32,9 @@ public class ApplicantService {
 	
 	@Autowired
 	JobApplicationRepo jobApplicationRepo;
+	
+	@Autowired
+	InterviewRepository interviewRepo;
 	
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -120,4 +126,14 @@ public class ApplicantService {
 		  throw new RuntimeException("Exception while fetching jobs",ex);
 	   }	  		
 	}
+     
+     
+     public List<JobApplication> getApplicationDetails(String username) {
+    	 
+    	 Pageable pageable =  PageRequest.of(1, 5,Sort.by(Sort.Direction.DESC,"jobApplicationadate"));   	 
+    	 Page<JobApplication> application = jobApplicationRepo.findByUsername(username,pageable);
+    	 
+    	 return application.getContent();
+    	 
+     }
 }

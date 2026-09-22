@@ -18,12 +18,8 @@ public class InterviewController {
 	
 	@PostMapping(value="/interview/feedback")
 	public void interviewFeedabck(@RequestBody CandidateFeedbackDTO candidateFeedbackDTO
-			,@RequestParam("feedbackby") String feedbackBy) {
-		
-		
+			,@RequestParam("feedbackby") String feedbackBy) {		
 		candidateInterviewFeedbackService.saveCandidateInterviewFeedback(candidateFeedbackDTO
-				,feedbackBy);
-		
-		
+				,feedbackBy);		
 	}
 }
